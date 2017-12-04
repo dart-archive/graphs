@@ -1,0 +1,22 @@
+language: dart
+sudo: false
+dart:
+  - stable
+  - dev
+cache:
+  directories:
+    - $HOME/.pub-cache
+
+dist: trusty
+
+dart_task:
+  - test
+  - test -p chrome
+  - test -p firefox
+  - dartfmt
+  - dartanalyzer
+
+matrix:
+  exclude:
+    - dart: stable
+      dart_task: dartfmt

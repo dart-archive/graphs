@@ -1,13 +1,7 @@
 language: dart
-sudo: false
 dart:
   - stable
   - dev
-cache:
-  directories:
-    - $HOME/.pub-cache
-
-dist: trusty
 
 dart_task:
   - test
@@ -20,3 +14,7 @@ matrix:
   exclude:
     - dart: stable
       dart_task: dartfmt
+
+cache:
+  directories:
+    - $HOME/.pub-cache

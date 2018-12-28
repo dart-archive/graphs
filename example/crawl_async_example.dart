@@ -13,12 +13,11 @@ import 'package:graphs/graphs.dart';
 import 'package:path/path.dart' as p;
 import 'package:pool/pool.dart';
 
-/// Limits calls to [findImports].
-final _pool = Pool(10);
-
 /// Print a transitive set of imported URIs where libraries are read
 /// asynchronously.
 Future<Null> main() async {
+  // Limits calls to [findImports].
+  var _pool = Pool(10);
   var allImports = await crawlAsync<Uri, Source>(
           [Uri.parse('package:graphs/graphs.dart')],
           read,

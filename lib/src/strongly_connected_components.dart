@@ -32,8 +32,8 @@ import 'dart:math' show min;
 List<List<T>> stronglyConnectedComponents<T>(
   Iterable<T> nodes,
   Iterable<T> Function(T) edges, {
-  bool Function(T, T) equals,
-  int Function(T) hashCode,
+  bool Function(T?, T?)? equals,
+  int Function(T)? hashCode,
 }) {
   final result = <List<T>>[];
   final lowLinks = HashMap<T, int>(equals: equals, hashCode: hashCode);
@@ -52,12 +52,20 @@ List<List<T>> stronglyConnectedComponents<T>(
     lastVisited.addLast(node);
     onStack.add(node);
     // ignore: omit_local_variable_types
-    for (final T next in edges(node) ?? const []) {
+    for (final T next in edges(node)) {
       if (!indexes.containsKey(next)) {
         strongConnect(next);
-        lowLinks[node] = min(lowLinks[node], lowLinks[next]);
+        final n = lowLinks[node];
+        final x = lowLinks[next];
+        if (n != null && x != null) {
+          lowLinks[node] = min(n, x);
+        }
       } else if (onStack.contains(next)) {
-        lowLinks[node] = min(lowLinks[node], indexes[next]);
+        final n = lowLinks[node];
+        final x = indexes[next];
+        if (n != null && x != null) {
+          lowLinks[node] = min(n, x);
+        }
       }
     }
     if (lowLinks[node] == indexes[node]) {
@@ -67,7 +75,7 @@ List<List<T>> stronglyConnectedComponents<T>(
         next = lastVisited.removeLast();
         onStack.remove(next);
         component.add(next);
-      } while (!equals(next, node));
+      } while (equals?.call(next, node) == false);
       result.add(component);
     }
   }
@@ -78,4 +86,4 @@ List<List<T>> stronglyConnectedComponents<T>(
   return result;
 }
 
-bool _defaultEquals(Object a, Object b) => a == b;
+bool _defaultEquals<T>(T a, T b) => a == b;

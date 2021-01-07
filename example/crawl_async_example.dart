@@ -26,9 +26,9 @@ Future<Null> main() async {
   print(allImports.map((s) => s.uri).toList());
 }
 
-AnalysisContext _analysisContext;
+AnalysisContext? _analysisContext;
 
-Future<AnalysisContext> get analysisContext async {
+Future<AnalysisContext?> get analysisContext async {
   if (_analysisContext == null) {
     var libUri = Uri.parse('package:graphs/');
     var libPath = await pathForUri(libUri);
@@ -39,25 +39,28 @@ Future<AnalysisContext> get analysisContext async {
       throw StateError('Expected to find exactly one context root, got $roots');
     }
 
-    _analysisContext = ContextBuilder().createContext(contextRoot: roots[0]);
+    final analysisContext =
+        ContextBuilder().createContext(contextRoot: roots[0]);
+    _analysisContext = analysisContext;
+    return analysisContext;
   }
 
-  return _analysisContext;
+  return null;
 }
 
-Future<Iterable<Uri>> findImports(Uri from, Source source) async {
-  return source.unit.directives
+Future<Iterable<Uri>?> findImports(Uri from, Source source) async {
+  return source.unit?.directives
       .whereType<UriBasedDirective>()
       .map((d) => d.uri.stringValue)
       .where((uri) => !uri.startsWith('dart:'))
       .map((import) => resolveImport(import, from));
 }
 
-Future<CompilationUnit> parseUri(Uri uri) async {
+Future<CompilationUnit?> parseUri(Uri uri) async {
   var path = await pathForUri(uri);
-  var analysisSession = (await analysisContext).currentSession;
-  var parseResult = analysisSession.getParsedUnit(path);
-  return parseResult.unit;
+  var analysisSession = (await analysisContext)?.currentSession;
+  var parseResult = analysisSession?.getParsedUnit(path);
+  return parseResult?.unit;
 }
 
 Future<String> pathForUri(Uri uri) async {
@@ -81,7 +84,7 @@ Uri resolveImport(String import, Uri from) {
 
 class Source {
   final Uri uri;
-  final CompilationUnit unit;
+  final CompilationUnit? unit;
 
   Source(this.uri, this.unit);
 }

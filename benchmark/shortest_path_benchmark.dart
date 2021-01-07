@@ -21,7 +21,7 @@ void main() {
     }
   }
 
-  int minTicks;
+  int? minTicks;
   var maxIteration = 0;
 
   final testOutput =
@@ -34,7 +34,7 @@ void main() {
     watch
       ..reset()
       ..start();
-    final length = shortestPath(0, size - 1, (e) => graph[e] ?? []).length;
+    final length = shortestPath(0, size - 1, (e) => graph[e] ?? [])?.length;
     watch.stop();
     assert(length == 4, '$length');
 

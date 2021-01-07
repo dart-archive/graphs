@@ -24,10 +24,10 @@ void main() {
     '6': ['7'],
   };
 
-  List<String> getValues(String key) => graph[key] ?? [];
+  List<String?> getValues(String? key) => graph[key] ?? [];
 
   List<X> getXValues(X key) =>
-      graph[key.value]?.map((v) => X(v))?.toList() ?? [];
+      graph[key.value]?.map((v) => X(v)).toList() ?? [];
 
   test('null `start` throws AssertionError', () {
     expect(() => shortestPath(null, '1', getValues),
@@ -36,22 +36,9 @@ void main() {
         _throwsAssertionError('`start` cannot be null'));
   });
 
-  test('null `edges` throws AssertionError', () {
-    expect(() => shortestPath(1, 1, null),
-        _throwsAssertionError('`edges` cannot be null'));
-    expect(() => shortestPaths(1, null),
-        _throwsAssertionError('`edges` cannot be null'));
-  });
-
   test('null return value from `edges` throws', () {
-    expect(shortestPath(1, 1, (input) => null), <dynamic>[],
-        reason: 'self target short-circuits');
     expect(shortestPath(1, 1, (input) => [null]), <dynamic>[],
         reason: 'self target short-circuits');
-
-    expect(() => shortestPath(1, 2, (input) => null), throwsNoSuchMethodError);
-
-    expect(() => shortestPaths(1, (input) => null), throwsNoSuchMethodError);
 
     expect(() => shortestPath(1, 2, (input) => [null]),
         _throwsAssertionError('`edges` cannot return null values.'));
@@ -59,7 +46,7 @@ void main() {
         _throwsAssertionError('`edges` cannot return null values.'));
   });
 
-  void _singlePathTest(String from, String to, List<String> expected) {
+  void _singlePathTest(String from, String? to, List<String>? expected) {
     test('$from -> $to should be $expected (mapped)', () {
       expect(
           shortestPath<X>(X(from), X(to), getXValues,
@@ -127,7 +114,7 @@ void main() {
     final size = 1000;
     final graph = HashMap<int, List<int>>();
 
-    List<int> resultForGraph() =>
+    List<int>? resultForGraph() =>
         shortestPath<int>(0, size - 1, (e) => graph[e] ?? const []);
 
     void addRandomEdge() {
@@ -139,7 +126,7 @@ void main() {
       }
     }
 
-    List<int> result;
+    List<int>? result;
 
     // Add edges until there is a shortest path between `0` and `size - 1`
     do {
@@ -156,10 +143,10 @@ void main() {
     do {
       expect(++count, lessThan(size * 5), reason: 'This loop should finish.');
       addRandomEdge();
-      final previousResultLength = result.length;
+      final previousResultLength = result?.length;
       result = resultForGraph();
       expect(result, hasLength(lessThanOrEqualTo(previousResultLength)));
-    } while (result.length > 2);
+    } while ((result?.length ?? 0) > 2);
 
     expect(result, [275, 999]);
 
@@ -173,11 +160,13 @@ void main() {
       final randomKey = graph.keys.elementAt(_rnd.nextInt(graph.length));
       final list = graph[randomKey];
       expect(list, isNotEmpty);
-      list.removeAt(_rnd.nextInt(list.length));
-      if (list.isEmpty) {
-        graph.remove(randomKey);
+      if (list != null) {
+        list.removeAt(_rnd.nextInt(list.length));
+        if (list.isEmpty) {
+          graph.remove(randomKey);
+        }
       }
-      final previousResultLength = result.length;
+      final previousResultLength = result?.length;
       result = resultForGraph();
       if (result != null) {
         expect(result, hasLength(greaterThanOrEqualTo(previousResultLength)));

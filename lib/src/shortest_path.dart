@@ -24,12 +24,12 @@ import 'dart:collection';
 ///
 /// If you supply one of [equals] or [hashCode], you should generally also to
 /// supply the other.
-List<T> shortestPath<T>(
+List<T>? shortestPath<T>(
   T start,
   T target,
   Iterable<T> Function(T) edges, {
-  bool Function(T, T) equals,
-  int Function(T) hashCode,
+  bool Function(T?, T?)? equals,
+  int Function(T)? hashCode,
 }) =>
     _shortestPaths<T>(
       start,
@@ -61,8 +61,8 @@ List<T> shortestPath<T>(
 Map<T, List<T>> shortestPaths<T>(
   T start,
   Iterable<T> Function(T) edges, {
-  bool Function(T, T) equals,
-  int Function(T) hashCode,
+  bool Function(T?, T?)? equals,
+  int Function(T)? hashCode,
 }) =>
     _shortestPaths<T>(
       start,
@@ -74,29 +74,29 @@ Map<T, List<T>> shortestPaths<T>(
 Map<T, List<T>> _shortestPaths<T>(
   T start,
   Iterable<T> Function(T) edges, {
-  T target,
-  bool Function(T, T) equals,
-  int Function(T) hashCode,
+  T? target,
+  bool Function(T?, T?)? equals,
+  int Function(T)? hashCode,
 }) {
   assert(start != null, '`start` cannot be null');
   assert(edges != null, '`edges` cannot be null');
 
   final distances = HashMap<T, List<T>>(equals: equals, hashCode: hashCode);
-  distances[start] = List(0);
+  distances[start] = [];
 
   equals ??= _defaultEquals;
-  if (equals(start, target)) {
+  if (equals.call(start, target)) {
     return distances;
   }
 
   final toVisit = ListQueue<T>()..add(start);
 
-  List<T> bestOption;
+  List<T>? bestOption;
 
   while (toVisit.isNotEmpty) {
     final current = toVisit.removeFirst();
     final currentPath = distances[current];
-    final currentPathLength = currentPath.length;
+    final currentPathLength = currentPath?.length ?? 0;
 
     if (bestOption != null && (currentPathLength + 1) >= bestOption.length) {
       // Skip any existing `toVisit` items that have no chance of being
@@ -111,12 +111,12 @@ Map<T, List<T>> _shortestPaths<T>(
       assert(existingPath == null ||
           existingPath.length <= (currentPathLength + 1));
 
-      if (existingPath == null) {
-        final newOption = List<T>(currentPathLength + 1)
+      if (existingPath == null && currentPath != null) {
+        final newOption = List<T>.filled(currentPathLength + 1, edge)
           ..setRange(0, currentPathLength, currentPath)
           ..[currentPathLength] = edge;
 
-        if (equals(edge, target)) {
+        if (target != null && equals(edge, target)) {
           assert(bestOption == null || bestOption.length > newOption.length);
           bestOption = newOption;
         }
@@ -134,4 +134,4 @@ Map<T, List<T>> _shortestPaths<T>(
   return distances;
 }
 
-bool _defaultEquals(Object a, Object b) => a == b;
+bool _defaultEquals<T>(T a, T b) => a == b;

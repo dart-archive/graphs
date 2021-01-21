@@ -82,7 +82,7 @@ Map<T, List<T>> _shortestPaths<T>(
   assert(edges != null, '`edges` cannot be null');
 
   final distances = HashMap<T, List<T>>(equals: equals, hashCode: hashCode);
-  distances[start] = [];
+  distances[start] = const [];
 
   equals ??= _defaultEquals;
   if (equals.call(start, target)) {
@@ -112,9 +112,10 @@ Map<T, List<T>> _shortestPaths<T>(
           existingPath.length <= (currentPathLength + 1));
 
       if (existingPath == null && currentPath != null) {
-        final newOption = List<T>.filled(currentPathLength + 1, edge)
-          ..setRange(0, currentPathLength, currentPath)
-          ..[currentPathLength] = edge;
+        final newOption = [
+          ...currentPath,
+          edge,
+        ];
 
         if (target != null && equals(edge, target)) {
           assert(bestOption == null || bestOption.length > newOption.length);

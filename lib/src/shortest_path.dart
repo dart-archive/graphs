@@ -79,7 +79,6 @@ Map<T, List<T>> _shortestPaths<T>(
   int Function(T)? hashCode,
 }) {
   assert(start != null, '`start` cannot be null');
-  assert(edges != null, '`edges` cannot be null');
 
   final distances = HashMap<T, List<T>>(equals: equals, hashCode: hashCode);
   distances[start] = const [];

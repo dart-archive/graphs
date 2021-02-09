@@ -52,7 +52,8 @@ Future<Iterable<Uri>?> findImports(Uri from, Source source) async {
   return source.unit?.directives
       .whereType<UriBasedDirective>()
       .map((d) => d.uri.stringValue)
-      .where((uri) => !uri.startsWith('dart:'))
+      .whereType<String>()
+      .where((uri) => uri.startsWith('dart:') == false)
       .map((import) => resolveImport(import, from));
 }
 

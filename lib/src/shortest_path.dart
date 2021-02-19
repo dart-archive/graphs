@@ -110,9 +110,9 @@ Map<T, List<T>> _shortestPaths<T>(
       assert(existingPath == null ||
           existingPath.length <= (currentPathLength + 1));
 
-      if (existingPath == null && currentPath != null) {
+      if (existingPath == null) {
         final newOption = [
-          ...currentPath,
+          ...?currentPath,
           edge,
         ];
 

@@ -28,7 +28,7 @@ List<T>? shortestPath<T>(
   T start,
   T target,
   Iterable<T> Function(T) edges, {
-  bool Function(T?, T?)? equals,
+  bool Function(T, T)? equals,
   int Function(T)? hashCode,
 }) =>
     _shortestPaths<T>(
@@ -61,7 +61,7 @@ List<T>? shortestPath<T>(
 Map<T, List<T>> shortestPaths<T>(
   T start,
   Iterable<T> Function(T) edges, {
-  bool Function(T?, T?)? equals,
+  bool Function(T, T)? equals,
   int Function(T)? hashCode,
 }) =>
     _shortestPaths<T>(

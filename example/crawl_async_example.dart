@@ -48,8 +48,8 @@ Future<AnalysisContext> get analysisContext async {
   return _analysisContext!;
 }
 
-Future<Iterable<Uri>?> findImports(Uri from, Source source) async {
-  return source.unit?.directives
+Future<Iterable<Uri>> findImports(Uri from, Source source) async {
+  return source.unit.directives
       .whereType<UriBasedDirective>()
       .map((d) => d.uri.stringValue)
       .whereType<String>()
@@ -85,7 +85,7 @@ Uri resolveImport(String import, Uri from) {
 
 class Source {
   final Uri uri;
-  final CompilationUnit? unit;
+  final CompilationUnit unit;
 
   Source(this.uri, this.unit);
 }

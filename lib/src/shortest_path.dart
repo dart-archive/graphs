@@ -75,7 +75,7 @@ Map<T, List<T>> _shortestPaths<T>(
   T start,
   Iterable<T> Function(T) edges, {
   T? target,
-  bool Function(T?, T?)? equals,
+  bool Function(T, T)? equals,
   int Function(T)? hashCode,
 }) {
   assert(start != null, '`start` cannot be null');
@@ -84,7 +84,7 @@ Map<T, List<T>> _shortestPaths<T>(
   distances[start] = const [];
 
   equals ??= _defaultEquals;
-  if (equals(start, target)) {
+  if (target != null && equals(start, target)) {
     return distances;
   }
 

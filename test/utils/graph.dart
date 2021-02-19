@@ -40,5 +40,6 @@ class AsyncGraph {
   Future<String?> readNode(String node) async =>
       graph.containsKey(node) ? node : null;
 
-  Future<Iterable<String>?> edges(String key, String? node) async => graph[key];
+  Future<Iterable<String>> edges(String key, String? node) async =>
+      graph[key] ?? [];
 }

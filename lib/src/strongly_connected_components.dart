@@ -75,7 +75,7 @@ List<List<T>> stronglyConnectedComponents<T>(
         next = lastVisited.removeLast();
         onStack.remove(next);
         component.add(next);
-      } while (equals?.call(next, node) == false);
+      } while (!equals!(next, node));
       result.add(component);
     }
   }

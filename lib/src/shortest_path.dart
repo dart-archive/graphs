@@ -84,7 +84,7 @@ Map<T, List<T>> _shortestPaths<T>(
   distances[start] = const [];
 
   equals ??= _defaultEquals;
-  if (equals.call(start, target)) {
+  if (equals(start, target)) {
     return distances;
   }
 

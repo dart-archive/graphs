@@ -87,7 +87,7 @@ void main() {
         'a': ['b'],
       };
       var nodes = crawlAsync(['a'], (n) => n,
-          (k, n) => k == 'b' ? throw ArgumentError() : graph[k]);
+          (k, n) => k == 'b' ? throw ArgumentError() : graph[k]!);
       expect(nodes, emitsThrough(emitsError(isArgumentError)));
     });
 
@@ -96,7 +96,7 @@ void main() {
         'a': ['b'],
       };
       var nodes = crawlAsync(['a'], (n) => n == 'b' ? throw ArgumentError() : n,
-          (k, n) => graph[k]);
+          (k, n) => graph[k]!);
       expect(nodes, emitsThrough(emitsError(isArgumentError)));
     });
   });

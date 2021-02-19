@@ -28,7 +28,7 @@ Future<Null> main() async {
 
 AnalysisContext? _analysisContext;
 
-Future<AnalysisContext?> get analysisContext async {
+Future<AnalysisContext> get analysisContext async {
   if (_analysisContext == null) {
     var libUri = Uri.parse('package:graphs/');
     var libPath = await pathForUri(libUri);
@@ -45,7 +45,7 @@ Future<AnalysisContext?> get analysisContext async {
     return analysisContext;
   }
 
-  return null;
+  return _analysisContext!;
 }
 
 Future<Iterable<Uri>?> findImports(Uri from, Source source) async {
@@ -57,11 +57,11 @@ Future<Iterable<Uri>?> findImports(Uri from, Source source) async {
       .map((import) => resolveImport(import, from));
 }
 
-Future<CompilationUnit?> parseUri(Uri uri) async {
+Future<CompilationUnit> parseUri(Uri uri) async {
   var path = await pathForUri(uri);
-  var analysisSession = (await analysisContext)?.currentSession;
-  var parseResult = analysisSession?.getParsedUnit(path);
-  return parseResult?.unit;
+  var analysisSession = (await analysisContext).currentSession;
+  var parseResult = analysisSession.getParsedUnit(path);
+  return parseResult.unit;
 }
 
 Future<String> pathForUri(Uri uri) async {

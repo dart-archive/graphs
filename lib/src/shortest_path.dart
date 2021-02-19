@@ -134,4 +134,4 @@ Map<T, List<T>> _shortestPaths<T>(
   return distances;
 }
 
-bool _defaultEquals<T>(T a, T b) => a == b;
+bool _defaultEquals(Object? a, Object? b) => a == b;

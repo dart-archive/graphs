@@ -78,4 +78,4 @@ List<List<T>> stronglyConnectedComponents<T>(
   return result;
 }
 
-bool _defaultEquals<T>(T a, T b) => a == b;
+bool _defaultEquals(Object? a, Object? b) => a == b;

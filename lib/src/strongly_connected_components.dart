@@ -55,17 +55,9 @@ List<List<T>> stronglyConnectedComponents<T>(
     for (final T next in edges(node)) {
       if (!indexes.containsKey(next)) {
         strongConnect(next);
-        final n = lowLinks[node];
-        final x = lowLinks[next];
-        if (n != null && x != null) {
-          lowLinks[node] = min(n, x);
-        }
+        lowLinks[node] = min(lowLinks[node]!, lowLinks[next]!);
       } else if (onStack.contains(next)) {
-        final n = lowLinks[node];
-        final x = indexes[next];
-        if (n != null && x != null) {
-          lowLinks[node] = min(n, x);
-        }
+        lowLinks[node] = min(lowLinks[node]!, indexes[next]!);
       }
     }
     if (lowLinks[node] == indexes[node]) {

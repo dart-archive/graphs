@@ -30,6 +30,7 @@ jobs:
         name: Install dependencies
         run: dart pub get
       - name: Check formatting
+        # --set-exit-if-changed does not actually work
         run: dart format --output=none --set-exit-if-changed .
         if: always() && steps.install.outcome == 'success'
       - name: Analyze code

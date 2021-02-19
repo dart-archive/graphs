@@ -32,7 +32,7 @@ import 'dart:math' show min;
 List<List<T>> stronglyConnectedComponents<T>(
   Iterable<T> nodes,
   Iterable<T> Function(T) edges, {
-  bool Function(T?, T?)? equals,
+  bool Function(T, T)? equals,
   int Function(T)? hashCode,
 }) {
   final result = <List<T>>[];

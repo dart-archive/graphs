@@ -2,7 +2,7 @@
 
 - **Breaking**: Paths from `shortestPath[s]` are now returned as iterables to
   reduce memory consumption of the algorithm to O(n).
-- Require Dart SDK `>=2.8.1 <3.0.0`.
+- Require Dart SDK `>=2.9.0 <3.0.0`.
 
 # 0.2.1
 

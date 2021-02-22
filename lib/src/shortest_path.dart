@@ -100,7 +100,7 @@ Map<T, Iterable<T>> _shortestPaths<T>(
       final existingPath = distances[edge];
 
       if (existingPath == null) {
-        distances[edge] = currentPath.followedBy(List<T>.filled(1, edge));
+        distances[edge] = _Tail(currentPath, edge);
         if (equals(edge, target)) {
           return distances;
         }
@@ -113,3 +113,36 @@ Map<T, Iterable<T>> _shortestPaths<T>(
 }
 
 bool _defaultEquals(Object a, Object b) => a == b;
+
+/// Efficient iterable that allows us to share the shared parts of the path
+/// up to this point (the [head]) with all other paths leading from it, but
+/// still iterate in the correct order.
+class _Tail<T> extends Iterable<T> {
+  final Iterable<T> head;
+  final T tail;
+
+  _Tail(this.head, this.tail);
+
+  @override
+  Iterator<T> get iterator => _TailIterator<T>(head.iterator, tail);
+}
+
+class _TailIterator<T> implements Iterator<T> {
+  final Iterator<T> head;
+  final T tail;
+  bool inHead = true;
+
+  _TailIterator(this.head, this.tail);
+
+  @override
+  T get current => inHead ? head.current : tail;
+
+  @override
+  bool moveNext() {
+    if (inHead) {
+      inHead = head.moveNext();
+      return true;
+    }
+    return false;
+  }
+}

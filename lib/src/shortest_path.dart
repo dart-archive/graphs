@@ -81,8 +81,8 @@ Map<T, Iterable<T>> _shortestPaths<T>(
   assert(start != null, '`start` cannot be null');
   assert(edges != null, '`edges` cannot be null');
 
-  final distances = HashMap<T, Iterable<T>>(equals: equals, hashCode: hashCode);
-  distances[start] = List<T>.empty();
+  final distances = HashMap<T, _Tail<T>>(equals: equals, hashCode: hashCode);
+  distances[start] = _Tail<T>(null, start);
 
   equals ??= _defaultEquals;
   if (equals(start, target)) {
@@ -118,31 +118,28 @@ bool _defaultEquals(Object a, Object b) => a == b;
 /// up to this point (the [head]) with all other paths leading from it, but
 /// still iterate in the correct order.
 class _Tail<T> extends Iterable<T> {
-  final Iterable<T> head;
+  final _Tail<T> /*?*/ head;
   final T tail;
 
-  _Tail(this.head, this.tail);
+  @override
+  final int length;
+
+  _Tail(this.head, this.tail) : length = (head?.length ?? 0) + 1;
 
   @override
-  Iterator<T> get iterator => _TailIterator<T>(head.iterator, tail);
-}
+  Iterator<T> get iterator {
+    if (_iterable != null) return _iterable.iterator;
 
-class _TailIterator<T> implements Iterator<T> {
-  final Iterator<T> head;
-  final T tail;
-  bool inHead = true;
+    var next = this;
+    var reversed = List<T>.generate(length, (i) {
+      var val = next.tail;
+      next = next.head;
+      return val;
+    });
+    _iterable = reversed.reversed;
 
-  _TailIterator(this.head, this.tail);
-
-  @override
-  T get current => inHead ? head.current : tail;
-
-  @override
-  bool moveNext() {
-    if (inHead) {
-      inHead = head.moveNext();
-      return true;
-    }
-    return false;
+    return _iterable.iterator;
   }
+
+  Iterable<T> _iterable;
 }

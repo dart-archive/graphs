@@ -41,7 +41,7 @@ void main() {
     final first = result.first;
     watch.stop();
     assert(length == 999, '$length');
-    assert(first == 1, 0);
+    assert(first == 1, '$first');
 
     if (minTicks == null || watch.elapsedTicks < minTicks) {
       minTicks = watch.elapsedTicks;

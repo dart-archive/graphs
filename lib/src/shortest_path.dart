@@ -82,7 +82,7 @@ Map<T, Iterable<T>> _shortestPaths<T>(
   assert(edges != null, '`edges` cannot be null');
 
   final distances = HashMap<T, _Tail<T>>(equals: equals, hashCode: hashCode);
-  distances[start] = _Tail<T>(start);
+  distances[start] = _Tail<T>();
 
   equals ??= _defaultEquals;
   if (equals(start, target)) {
@@ -124,13 +124,14 @@ bool _defaultEquals(Object a, Object b) => a == b;
 /// iterator in order to avoid stack overflows for large paths. This copy is
 /// cached for subsequent calls.
 class _Tail<T> extends Iterable<T> {
-  final T tail;
+  final T /*?*/ tail;
   final _Tail<T> /*?*/ head;
   @override
   final int length;
-  _Tail(this.tail)
-      : head = null,
-        length = 1;
+  _Tail()
+      : tail = null,
+        head = null,
+        length = 0;
   _Tail._(this.tail, this.head, this.length);
   _Tail<T> append(T value) => _Tail._(value, this, length + 1);
 

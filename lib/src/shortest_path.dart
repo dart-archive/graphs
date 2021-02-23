@@ -82,7 +82,7 @@ Map<T, Iterable<T>> _shortestPaths<T>(
   assert(edges != null, '`edges` cannot be null');
 
   final distances = HashMap<T, _Tail<T>>(equals: equals, hashCode: hashCode);
-  distances[start] = _Tail<T>(null, start);
+  distances[start] = _Tail<T>(start);
 
   equals ??= _defaultEquals;
   if (equals(start, target)) {
@@ -100,7 +100,7 @@ Map<T, Iterable<T>> _shortestPaths<T>(
       final existingPath = distances[edge];
 
       if (existingPath == null) {
-        distances[edge] = _Tail(currentPath, edge);
+        distances[edge] = currentPath.append(edge);
         if (equals(edge, target)) {
           return distances;
         }
@@ -114,32 +114,39 @@ Map<T, Iterable<T>> _shortestPaths<T>(
 
 bool _defaultEquals(Object a, Object b) => a == b;
 
-/// Efficient iterable that allows us to share the shared parts of the path
-/// up to this point (the [head]) with all other paths leading from it, but
-/// still iterate in the correct order.
+/// An immutable iterable that can efficiently return a copy with a value
+/// appended.
+///
+/// This implementation has an efficient [length] property.
+///
+/// Note that grabbing an [iterator] for the first time is O(n) in time and
+/// space because it copies all the values to a new list and uses that
+/// iterator in order to avoid stack overflows for large paths. This copy is
+/// cached for subsequent calls.
 class _Tail<T> extends Iterable<T> {
-  final _Tail<T> /*?*/ head;
   final T tail;
-
+  final _Tail<T> /*?*/ head;
   @override
   final int length;
+  _Tail(this.tail)
+      : head = null,
+        length = 1;
+  _Tail._(this.tail, this.head, this.length);
+  _Tail<T> append(T value) => _Tail._(value, this, length + 1);
 
-  _Tail(this.head, this.tail) : length = (head?.length ?? 0) + 1;
+  Iterator<T> /*?*/ _iterator;
 
   @override
   Iterator<T> get iterator {
-    if (_iterable != null) return _iterable.iterator;
-
-    var next = this;
-    var reversed = List<T>.generate(length, (i) {
-      var val = next.tail;
-      next = next.head;
-      return val;
-    });
-    _iterable = reversed.reversed;
-
-    return _iterable.iterator;
+    if (_iterator == null) {
+      var /*_Tail<T>?*/ next = this;
+      var values = List<T>.generate(length, (_) {
+        var val = next.tail;
+        next = next.head;
+        return val;
+      });
+      _iterator = values.reversed.iterator;
+    }
+    return _iterator;
   }
-
-  Iterable<T> _iterable;
 }

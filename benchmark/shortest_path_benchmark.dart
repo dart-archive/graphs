@@ -27,16 +27,19 @@ void main() {
   final testOutput =
       shortestPath(0, size - 1, (e) => graph[e] ?? []).toString();
   print(testOutput);
-  assert(testOutput == '[258, 252, 819, 999]');
+  assert(testOutput == '(258, 252, 819, 999)', testOutput);
 
   final watch = Stopwatch();
   for (var i = 1;; i++) {
     watch
       ..reset()
       ..start();
-    final length = shortestPath(0, size - 1, (e) => graph[e] ?? []).length;
+    final result = shortestPath(0, size - 1, (e) => graph[e] ?? []);
+    final length = result.length;
+    final first = result.first;
     watch.stop();
     assert(length == 4, '$length');
+    assert(first == 258, '$first');
 
     if (minTicks == null || watch.elapsedTicks < minTicks) {
       minTicks = watch.elapsedTicks;

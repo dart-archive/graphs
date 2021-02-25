@@ -10,11 +10,6 @@ import 'dart:collection';
 /// If [start] `==` [target], an empty [List] is returned and [edges] is never
 /// called.
 ///
-/// [start], [target] and all values returned by [edges] must not be `null`.
-/// If asserts are enabled, an [AssertionError] is raised if these conditions
-/// are not met. If asserts are not enabled, violations result in undefined
-/// behavior.
-///
 /// If [equals] is provided, it is used to compare nodes in the graph. If
 /// [equals] is omitted, the node's own [Object.==] is used instead.
 ///
@@ -24,7 +19,7 @@ import 'dart:collection';
 ///
 /// If you supply one of [equals] or [hashCode], you should generally also to
 /// supply the other.
-List<T>? shortestPath<T>(
+Iterable<T>? shortestPath<T extends Object>(
   T start,
   T target,
   Iterable<T> Function(T) edges, {
@@ -58,7 +53,7 @@ List<T>? shortestPath<T>(
 ///
 /// If you supply one of [equals] or [hashCode], you should generally also to
 /// supply the other.
-Map<T, List<T>> shortestPaths<T>(
+Map<T, Iterable<T>> shortestPaths<T extends Object>(
   T start,
   Iterable<T> Function(T) edges, {
   bool Function(T, T)? equals,
@@ -71,62 +66,38 @@ Map<T, List<T>> shortestPaths<T>(
       hashCode: hashCode,
     );
 
-Map<T, List<T>> _shortestPaths<T>(
+Map<T, Iterable<T>> _shortestPaths<T extends Object>(
   T start,
   Iterable<T> Function(T) edges, {
   T? target,
   bool Function(T, T)? equals,
   int Function(T)? hashCode,
 }) {
-  assert(start != null, '`start` cannot be null');
+  final distances = HashMap<T, _Tail<T>>(equals: equals, hashCode: hashCode);
+  distances[start] = _Tail<T>();
 
-  final distances = HashMap<T, List<T>>(equals: equals, hashCode: hashCode);
-  distances[start] = const [];
-
-  equals ??= _defaultEquals;
-  if (target != null && equals(start, target)) {
+  final nonNullEquals = equals ??= _defaultEquals;
+  final isTarget =
+      target == null ? _neverTarget : (T node) => nonNullEquals(node, target);
+  if (isTarget(start)) {
     return distances;
   }
 
   final toVisit = ListQueue<T>()..add(start);
 
-  List<T>? bestOption;
-
   while (toVisit.isNotEmpty) {
     final current = toVisit.removeFirst();
-    final currentPath = distances[current];
-    final currentPathLength = currentPath?.length ?? 0;
-
-    if (bestOption != null && (currentPathLength + 1) >= bestOption.length) {
-      // Skip any existing `toVisit` items that have no chance of being
-      // better than bestOption (if it exists)
-      continue;
-    }
+    final currentPath = distances[current]!;
 
     for (var edge in edges(current)) {
-      assert(edge != null, '`edges` cannot return null values.');
       final existingPath = distances[edge];
 
-      assert(existingPath == null ||
-          existingPath.length <= (currentPathLength + 1));
-
       if (existingPath == null) {
-        final newOption = [
-          ...?currentPath,
-          edge,
-        ];
-
-        if (target != null && equals(edge, target)) {
-          assert(bestOption == null || bestOption.length > newOption.length);
-          bestOption = newOption;
+        distances[edge] = currentPath.append(edge);
+        if (isTarget(edge)) {
+          return distances;
         }
-
-        distances[edge] = newOption;
-        if (bestOption == null || bestOption.length > newOption.length) {
-          // Only add a node to visit if it might be a better path to the
-          // target node
-          toVisit.add(edge);
-        }
+        toVisit.add(edge);
       }
     }
   }
@@ -134,4 +105,40 @@ Map<T, List<T>> _shortestPaths<T>(
   return distances;
 }
 
-bool _defaultEquals(Object? a, Object? b) => a == b;
+bool _defaultEquals(Object a, Object b) => a == b;
+bool _neverTarget(Object _) => false;
+
+/// An immutable iterable that can efficiently return a copy with a value
+/// appended.
+///
+/// This implementation has an efficient [length] property.
+///
+/// Note that grabbing an [iterator] for the first time is O(n) in time and
+/// space because it copies all the values to a new list and uses that
+/// iterator in order to avoid stack overflows for large paths. This copy is
+/// cached for subsequent calls.
+class _Tail<T extends Object> extends Iterable<T> {
+  final T? tail;
+  final _Tail<T>? head;
+  @override
+  final int length;
+  _Tail()
+      : tail = null,
+        head = null,
+        length = 0;
+  _Tail._(this.tail, this.head, this.length);
+  _Tail<T> append(T value) => _Tail._(value, this, length + 1);
+
+  @override
+  Iterator<T> get iterator => _asIterable.iterator;
+
+  late final _asIterable = () {
+    _Tail<T>? next = this;
+    var reversed = List.generate(length, (_) {
+      var val = next!.tail;
+      next = next!.head;
+      return val as T;
+    });
+    return reversed.reversed;
+  }();
+}

@@ -1,6 +1,9 @@
-# 0.2.1
+# 1.0.0-dev
 
-- Require Dart SDK `>=2.2.0 <3.0.0`.
+
+- Migrate to null safety.
+- **Breaking**: Paths from `shortestPath[s]` are now returned as iterables to
+  reduce memory consumption of the algorithm to O(n).
 
 # 0.2.0
 

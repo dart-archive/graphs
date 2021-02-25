@@ -12,20 +12,20 @@ class Graph {
 
   Graph(this._graph);
 
-  List<String> edges(String node) => _graph[node] ?? [];
+  List<String> edges(String node) => _graph[node] ?? <Never>[];
 
   Iterable<String> get allNodes => _graph.keys;
 }
 
 class BadGraph {
-  final Map<X, List<X>> _graph;
+  final Map<X, List<X>?> _graph;
 
   BadGraph(Map<String, List<String>?> values)
       : _graph = LinkedHashMap(equals: xEquals, hashCode: xHashCode)
-          ..addEntries(values.entries.map((e) =>
-              MapEntry(X(e.key), e.value?.map((v) => X(v)).toList() ?? [])));
+          ..addEntries(values.entries.map(
+              (e) => MapEntry(X(e.key), e.value?.map((v) => X(v)).toList())));
 
-  List<X> edges(X node) => _graph[node] ?? [];
+  List<X> edges(X node) => _graph[node] ?? <Never>[];
 
   Iterable<X> get allNodes => _graph.keys;
 }
@@ -41,5 +41,5 @@ class AsyncGraph {
       graph.containsKey(node) ? node : null;
 
   Future<Iterable<String>> edges(String key, String? node) async =>
-      graph[key] ?? [];
+      graph[key] ?? <Never>[];
 }

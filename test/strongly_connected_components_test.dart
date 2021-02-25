@@ -147,9 +147,9 @@ void main() {
 
   group('custom hashCode and equals', () {
     /// Run [stronglyConnectedComponents] on [g].
-    List<List<String?>> components(
+    List<List<String>> components(
       Map<String, List<String>?> g, {
-      Iterable<String?>? startNodes,
+      Iterable<String>? startNodes,
     }) {
       final graph = BadGraph(g);
 

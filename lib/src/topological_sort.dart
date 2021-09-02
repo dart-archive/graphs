@@ -8,8 +8,8 @@ import 'package:collection/collection.dart';
 
 import 'cycle_exception.dart';
 
-/// Returns a topological sort of [nodes] given the directed edges of a graph
-/// provided by [edges].
+/// Returns a topological sort of the nodes of the directed edges of a graph
+/// provided by [nodes] and [edges].
 ///
 /// Each element of the returned iterable is guaranteed to appear after all
 /// nodes that have edges leading to that node. The result is not guaranteed to

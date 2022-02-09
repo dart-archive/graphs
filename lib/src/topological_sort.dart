@@ -32,6 +32,9 @@ import 'cycle_exception.dart';
 /// ordering. Note that even with a secondary sort, the result is _still_ not
 /// guaranteed to be unique or stable across releases of this package.
 ///
+/// Note: this requires that [nodes] and each iterable returned by [edges]
+/// contain no duplicate entries.
+///
 /// Throws a [CycleException<T>] if the graph is cyclical.
 List<T> topologicalSort<T>(Iterable<T> nodes, Iterable<T> Function(T) edges,
     {bool Function(T, T)? equals,
@@ -106,7 +109,7 @@ List<T> _topologicalSortWithSecondary<T>(
   }
 
   if (result.length < nodes.length) {
-    // This algoirthm doesn't automatically produce a cycle list as a side
+    // This algorithm doesn't automatically produce a cycle list as a side
     // effect of sorting, so to throw the appropriate [CycleException] we just
     // call the normal [topologicalSort] with a view of this graph that only
     // includes nodes that still have edges.
@@ -116,7 +119,7 @@ List<T> _topologicalSortWithSecondary<T>(
     }
 
     topologicalSort<T>(
-        nodes.where(nodeIsInCycle), (node) => edges(node).where(nodeIsInCycle),
+        nodes.where(nodeIsInCycle), edges,
         equals: equals, hashCode: hashCode);
     assert(false, 'topologicalSort() should throw if the graph has a cycle');
   }

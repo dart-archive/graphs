@@ -118,8 +118,7 @@ List<T> _topologicalSortWithSecondary<T>(
       return edges != null && edges > 0;
     }
 
-    topologicalSort<T>(
-        nodes.where(nodeIsInCycle), edges,
+    topologicalSort<T>(nodes.where(nodeIsInCycle), edges,
         equals: equals, hashCode: hashCode);
     assert(false, 'topologicalSort() should throw if the graph has a cycle');
   }

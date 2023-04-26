@@ -1,7 +1,7 @@
 # 2.2.1-dev
 
-- Make `stronglyConnectedComponents` iterative rather than recursive to avoid
-  stack overflows on very large graphs.
+- Make `stronglyConnectedComponents` and `topologicalSort` iterative rather than
+  recursive to avoid stack overflows on very large graphs.
 
 - Require Dart 2.18
 

@@ -1,12 +1,9 @@
 # 2.2.1-dev
 
+- Make `stronglyConnectedComponents` iterative rather than recursive to avoid
+  stack overflows on very large graphs.
+
 - Require Dart 2.18
-
-# 2.2.0
-
-* Add a `secondarySort` parameter to the `topologicalSort()` function which
-  applies an additional lexical sort where that doesn't break the topological
-  sort.
 
 # 2.1.0
 

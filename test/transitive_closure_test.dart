@@ -333,6 +333,7 @@ Map<T, Set<T>> _transitiveClosure<T extends Object>(
   int Function(T)? hashCode,
   bool acyclic = false,
 }) {
+  assert((equals == null) == (hashCode == null));
   if (equals != null) {
     graph = LinkedHashMap(equals: equals, hashCode: hashCode)..addAll(graph);
   }

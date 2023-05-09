@@ -52,7 +52,7 @@ List<List<T>> stronglyConnectedComponents<T extends Object>(
     final node = state.node;
     var iterator = state.iterator;
 
-    late int lowLink;
+    int lowLink;
     if (iterator == null) {
       if (indexes.containsKey(node)) continue;
       indexes[node] = index;

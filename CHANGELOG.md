@@ -7,6 +7,12 @@
 
 - Require Dart 2.18
 
+# 2.2.0
+
+* Add a `secondarySort` parameter to the `topologicalSort()` function which
+  applies an additional lexical sort where that doesn't break the topological
+  sort.
+
 # 2.1.0
 
 * Add a `topologicalSort()` function.

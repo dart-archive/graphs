@@ -1,3 +1,8 @@
+# This package has moved!
+
+__The package can now be found at https://github.com/dart-lang/tools/tree/main/pkgs/graphs__
+
+
 [![CI](https://github.com/dart-lang/graphs/actions/workflows/ci.yml/badge.svg)](https://github.com/dart-lang/graphs/actions/workflows/ci.yml)
 [![pub package](https://img.shields.io/pub/v/graphs.svg)](https://pub.dev/packages/graphs)
 [![package publisher](https://img.shields.io/pub/publisher/graphs.svg)](https://pub.dev/packages/graphs/publisher)

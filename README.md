@@ -1,4 +1,4 @@
-# This package has moved
+# This package has moved!
 
 __This package has moved to https://github.com/dart-lang/tools/tree/main/pkgs/graphs__
 
